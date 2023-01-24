@@ -9,6 +9,8 @@ const Gameboard = (() => {
         for (let i = 0; i < cards.length; i++) {
             cards[i].addEventListener("click", handleClick);
         }
+        const start = document.querySelector('button');
+        start.addEventListener("click", GameControl.startGame);
     };
     const handleClick = (event) => {
         let clickedBox = event.target.id;
@@ -18,13 +20,19 @@ const Gameboard = (() => {
     })();
 
 const GameControl = (() => {
-    let gameOn = true;
+    let gameOn = false;
     let playerTurn = 'p1';
+    let movesArray =   ['-','-','-','-','-','-','-','-','-'];
+    const startGame = () => {
+        gameOn = true;
+        clearMovesArray();
+    };
     const passTurn = () => {
         (playerTurn === 'p1') ? (playerTurn = 'p2') : (playerTurn = 'p1');
     };
     const checkTurn = () => playerTurn;
-    let movesArray = ['-','-','-','-','-','-','-','-','-'];
+    const clearMovesArray = () => {
+         movesArray = ['-','-','-','-','-','-','-','-','-']};
     const updateArray = (markPosition, mark) => {
         if (gameOn) {
             if (movesArray[markPosition] === '-') {
@@ -66,7 +74,7 @@ const GameControl = (() => {
         gameOn = false;
         gameEndDisplay.innerHTML = 'Tie game';
     };
-    return { updateArray, checkTurn };
+    return { updateArray, checkTurn, startGame };
 })();
 
 const Players = () => {
@@ -80,5 +88,5 @@ const Players = () => {
     return { makeMove };
 };
 
-const player1 = Players();
 Gameboard.setBoardListeners();
+const player1 = Players();
