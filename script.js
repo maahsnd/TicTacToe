@@ -11,6 +11,8 @@ const Gameboard = (() => {
         }
         const start = document.querySelector('button');
         start.addEventListener("click", GameControl.startGame);
+        const nameSubmit = document.querySelector('.player-names');
+        nameSubmit.addEventListener("click", Players.getPlayerNames);
     };
     const handleClick = (event) => {
         let clickedBox = event.target.id;
@@ -26,6 +28,9 @@ const GameControl = (() => {
     const startGame = () => {
         gameOn = true;
         clearMovesArray();
+        const names = player1.getPlayerNames();
+        const rules = document.querySelector('.rules');
+        rules.innerHTML = `${names[0]} goes first. Alternate turns until win or tie`;
     };
     const passTurn = () => {
         (playerTurn === 'p1') ? (playerTurn = 'p2') : (playerTurn = 'p1');
@@ -67,8 +72,11 @@ const GameControl = (() => {
     };
     const gameEndDisplay = document.querySelector('.game-end-message');
     const win = (player) => {
+        let names = player1.getPlayerNames()
+        let winner;
+        (player === 'p1') ? (winner = names[0]) : (winner = names[1]);
         gameOn = false;
-        gameEndDisplay.innerHTML = `${player} wins!`;
+        gameEndDisplay.innerHTML = `${winner} wins!`;
     };
     const tie = () => {
         gameOn = false;
@@ -85,7 +93,14 @@ const Players = () => {
         (player === 'p1') ? (mark = 'x') : (mark = 'o');
         GameControl.updateArray(markPosition, mark);
     };
-    return { makeMove };
+    const getPlayerNames = () => {
+        const player1 = document.querySelector('.player1');
+        const player2 = document.querySelector('.player2');
+        const form = document.querySelector('.player-names');
+        form.style.display = "none";
+        return {player1, player2};
+    };
+    return { makeMove, getPlayerNames };
 };
 
 Gameboard.setBoardListeners();

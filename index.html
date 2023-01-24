@@ -22,10 +22,20 @@
             <div class="card" id="8"></div>
         </div>
         <div class="scoreboard">
-            <button type="button">Start New Game</button>
-            <p class="match-up"></p>
+            <p>Enter names, submit, then hit start game!</p>
+            <p class="rules"></p>
             <p class="game-end-message"></p>
         </div>
+        <div class="player-names">
+           <form action="post">
+            <label for="player1">Player 1</label>
+            <input id="player1" type="text">
+            <label for="player2">Player 2</label>
+            <input id="player2" type="text">
+            <button class="player-names" type="button">Submit</button>
+           </form>
+        </div>
+        <button class="new-game" type="button">Start New Game</button>
     </div>
 
     <script src="script.js"></script>
