@@ -9,9 +9,9 @@ const Gameboard = (() => {
         for (let i = 0; i < cards.length; i++) {
             cards[i].addEventListener("click", handleClick);
         }
-        const start = document.querySelector('button');
+        const start = document.querySelector('.new-game');
         start.addEventListener("click", GameControl.startGame);
-        const nameSubmit = document.querySelector('.player-names');
+        const nameSubmit = document.querySelector('.player-names-submit');
         nameSubmit.addEventListener("click", Players.getPlayerNames);
     };
     const handleClick = (event) => {
@@ -30,7 +30,7 @@ const GameControl = (() => {
         clearMovesArray();
         const names = player1.getPlayerNames();
         const rules = document.querySelector('.rules');
-        rules.innerHTML = `${names[0]} goes first. Alternate turns until win or tie`;
+        rules.innerHTML = `${names[0].value} goes first. Alternate turns until win or tie`;
     };
     const passTurn = () => {
         (playerTurn === 'p1') ? (playerTurn = 'p2') : (playerTurn = 'p1');
@@ -74,7 +74,7 @@ const GameControl = (() => {
     const win = (player) => {
         let names = player1.getPlayerNames()
         let winner;
-        (player === 'p1') ? (winner = names[0]) : (winner = names[1]);
+        (player === 'p1') ? (winner = names[0].value) : (winner = names[1].value);
         gameOn = false;
         gameEndDisplay.innerHTML = `${winner} wins!`;
     };
@@ -93,12 +93,14 @@ const Players = () => {
         (player === 'p1') ? (mark = 'x') : (mark = 'o');
         GameControl.updateArray(markPosition, mark);
     };
-    const getPlayerNames = () => {
-        const player1 = document.querySelector('.player1');
-        const player2 = document.querySelector('.player2');
+    const getPlayerNames = (event) => {
+        console.log(event);
+        const players = document.querySelectorAll('input');
         const form = document.querySelector('.player-names');
         form.style.display = "none";
-        return {player1, player2};
+        console.log(players[0].value);
+        event.preventDefault();
+        return players;
     };
     return { makeMove, getPlayerNames };
 };
