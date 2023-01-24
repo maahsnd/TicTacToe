@@ -12,25 +12,36 @@ const Gameboard = (() => {
         const start = document.querySelector('.new-game');
         start.addEventListener("click", GameControl.startGame);
         const nameSubmit = document.querySelector('.player-names-submit');
-        nameSubmit.addEventListener("click", Players.getPlayerNames);
+        nameSubmit.addEventListener("click", handleSubmit);
     };
     const handleClick = (event) => {
         let clickedBox = event.target.id;
         player1.makeMove(clickedBox);
     };
+    const handleSubmit = (event) => {
+        player1.getPlayerNames(event);
+    }
     return { render, setBoardListeners };
     })();
 
 const GameControl = (() => {
     let gameOn = false;
+    const turnGameOn = () => {
+        gameOn = true;
+    };
     let playerTurn = 'p1';
     let movesArray =   ['-','-','-','-','-','-','-','-','-'];
+    const gameEndDisplay = document.querySelector('.game-end-message');
     const startGame = () => {
-        gameOn = true;
         clearMovesArray();
-        const names = player1.getPlayerNames();
+        gameEndDisplay.innerHTML = '';
+        const form = document.querySelector('.player-names');
+        const nameFields = document.querySelectorAll('input');
         const rules = document.querySelector('.rules');
-        rules.innerHTML = `${names[0].value} goes first. Alternate turns until win or tie`;
+        rules.innerHTML = "";
+        nameFields[0].value = "";
+        nameFields[1].value = "";
+        form.style.display = "block";
     };
     const passTurn = () => {
         (playerTurn === 'p1') ? (playerTurn = 'p2') : (playerTurn = 'p1');
@@ -38,6 +49,7 @@ const GameControl = (() => {
     const checkTurn = () => playerTurn;
     const clearMovesArray = () => {
          movesArray = ['-','-','-','-','-','-','-','-','-']};
+         Gameboard.render(movesArray);
     const updateArray = (markPosition, mark) => {
         if (gameOn) {
             if (movesArray[markPosition] === '-') {
@@ -51,7 +63,6 @@ const GameControl = (() => {
     const checkForWin = (player) => {
         let ltrToReplace = ( (player === 'p1') ? 'x' : 'o');
         let compStr = movesArray.join("").replaceAll(ltrToReplace, 'a');
-        console.log(compStr);
         ///check string against win patterns
         if ( 
             (/a..a..a../).test(compStr)|
@@ -63,16 +74,16 @@ const GameControl = (() => {
             (/a...a...a/).test(compStr)|
             (/..a.a.a../).test(compStr))
             {
-                return win();
+                return win(player);
             }
         ///check for tie 
         if (!(movesArray.includes('-', 0))) {
             return tie();
         }
     };
-    const gameEndDisplay = document.querySelector('.game-end-message');
     const win = (player) => {
         let names = player1.getPlayerNames()
+        console.log(names[0].value);
         let winner;
         (player === 'p1') ? (winner = names[0].value) : (winner = names[1].value);
         gameOn = false;
@@ -82,7 +93,7 @@ const GameControl = (() => {
         gameOn = false;
         gameEndDisplay.innerHTML = 'Tie game';
     };
-    return { updateArray, checkTurn, startGame };
+    return { updateArray, checkTurn, startGame, turnGameOn };
 })();
 
 const Players = () => {
@@ -98,8 +109,9 @@ const Players = () => {
         const players = document.querySelectorAll('input');
         const form = document.querySelector('.player-names');
         form.style.display = "none";
-        console.log(players[0].value);
-        event.preventDefault();
+        const rules = document.querySelector('.rules');
+        rules.innerHTML = `${players[0].value} goes first. Alternate turns until win or tie`;
+        GameControl.turnGameOn();
         return players;
     };
     return { makeMove, getPlayerNames };
